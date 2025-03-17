@@ -1,4 +1,5 @@
 import { FileService } from "../services/fileService";
+import { formatResponse } from "../utils/response";
 
 const fileService = new FileService();
 
@@ -8,18 +9,15 @@ export const uploadFile = async ({
   body: { name: string; folderId: string };
 }) => {
   if (!body.name || !body.folderId) {
-    return new Response(JSON.stringify({ error: "Missing name or folderId" }), {
-      status: 400,
-    });
+    return formatResponse(400, "Missing name or folderId");
   }
 
   try {
     const file = await fileService.createFile(body.name, body.folderId);
-    return new Response(JSON.stringify(file), { status: 201 });
+
+    return formatResponse(201, "File uploaded successfully", file);
   } catch (error) {
-    return new Response(JSON.stringify({ error: "Failed to upload file" }), {
-      status: 500,
-    });
+    return formatResponse(500, "Failed to upload file");
   }
 };
 
@@ -29,17 +27,12 @@ export const getFilesByFolder = async ({
   params: { folderId: string };
 }) => {
   if (!params.folderId) {
-    return new Response(JSON.stringify({ error: "Folder ID is required" }), {
-      status: 400,
-    });
+    return formatResponse(400, "Folder ID is required");
   }
-
   try {
     const files = await fileService.getFilesByFolder(params.folderId);
-    return new Response(JSON.stringify(files), { status: 200 });
+    return formatResponse(200, "Files fetched successfully", files);
   } catch (error) {
-    return new Response(JSON.stringify({ error: "Failed to fetch files" }), {
-      status: 500,
-    });
+    return formatResponse(500, "Failed to fetch files");
   }
 };

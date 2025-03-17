@@ -8,6 +8,7 @@
     "generate:folder-init": "mkdir -p {prisma,src/{config,controllers,repositories,services,tests,routes,utils}}"
   },
   "dependencies": {
+    "@elysiajs/cors": "^1.2.0",
     "@prisma/client": "^6.5.0",
     "elysia": "^1.2.25",
     "ioredis": "^5.6.0",

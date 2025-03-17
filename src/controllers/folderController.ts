@@ -1,6 +1,5 @@
-import { FolderService } from "../services/folderService";
-
-const folderService = new FolderService();
+import { folderService, FolderWithChildren } from "../services/folderService";
+import { formatResponse } from "../utils/response";
 
 export const createFolder = async ({
   body,
@@ -14,7 +13,8 @@ export const createFolder = async ({
   }
 
   const folder = await folderService.createFolder(body.name, body.parentId);
-  return new Response(JSON.stringify(folder), { status: 201 });
+
+  return formatResponse(201, "Folder created successfully", folder);
 };
 
 export const getFolders = async ({
@@ -22,20 +22,17 @@ export const getFolders = async ({
 }: {
   query: { parentId?: string };
 }) => {
-  const folders = await folderService.getSubFolders(query.parentId ?? null);
-  return new Response(JSON.stringify(folders), { status: 200 });
+  const folders: FolderWithChildren[] =
+    await folderService.getSubFoldersRecursive(query.parentId ?? null);
+
+  return formatResponse(200, "Folders fetched successfully", folders);
 };
 
 export const deleteFolder = async ({ params }: { params: { id: string } }) => {
   try {
     await folderService.deleteFolder(params.id);
-    return new Response(
-      JSON.stringify({ message: "Folder deleted successfully" }),
-      { status: 200 }
-    );
+    return formatResponse(200, "Folder deleted successfully");
   } catch (error) {
-    return new Response(JSON.stringify({ error: "Failed to delete folder" }), {
-      status: 500,
-    });
+    return formatResponse(500, "Failed to delete folder");
   }
 };

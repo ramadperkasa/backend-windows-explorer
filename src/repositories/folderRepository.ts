@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { Folder } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -16,7 +17,7 @@ export class FolderRepository {
     return prisma.folder.findUnique({ where: { id } });
   }
 
-  async getSubFolders(parentId: string | null = null) {
+  async getSubFolders(parentId: string | null): Promise<Folder[]> {
     return prisma.folder.findMany({ where: { parentId } });
   }
 
